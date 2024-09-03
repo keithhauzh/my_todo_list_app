@@ -72,9 +72,16 @@
                   
                 </form>
 
-                <span class="ms-2">
-                  <?= $task["label"]; ?>
-                </span>
+                <?php if ($task['completed'] == 1) :?>
+                  <span class="ms-2">
+                    <del><?= $task["label"]; ?></del>
+                  </span>
+                <?php else :?>
+                  <span class="ms-2">
+                    <?= $task["label"]; ?>
+                  </span>
+                <?php endif ;?>
+
               </div>
 
               <!-- Delete Button -->
