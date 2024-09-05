@@ -1,23 +1,8 @@
 <?php
 // put your backend code
 
-// start session (we will be using session in this page)
-session_start();
-
-// 1. collect database info
-// $host = "localhost"; // for windows user
-// $host = "127.0.0.1";  // for mac user
-$host = 'localhost';
-$database_name = "my_todo_list_app"; // connecting to which database 
-$database_user = "root";
-$database_password = "mysql";
-
-// 2. connect to database (PDO - PHP database object)
-$database = new PDO(
-    "mysql:host=$host;dbname=$database_name",
-    $database_user, // username
-    $database_password // password
-);
+// connect to the database
+$database = connectToDB();   
 
 //3. get all the data from the login page form
 $email = $_POST['email'];
@@ -25,7 +10,7 @@ $password = $_POST['password'];
 
 //4. check for error (make sure all the fields are filled and that the password is correct)
 if ( empty($email) || empty($password) ) {
-    echo "Please fill in all the fields!";
+    setError("Please fill in all the fields!", '/login');
 } else {
     //5. check if the email entered is registered in our database or not
     //5.1 sql command
@@ -50,13 +35,13 @@ if ( empty($email) || empty($password) ) {
             $_SESSION['loggeduser'] = $user;
 
             //8. redirect back to main page
-            header("Location:index.php");
+            header("Location:/");
             exit;
         } else {
-            echo "The password provided is incorrect, please try again.";
+            setError("The provided password is incorrect.", '/login');
         }
     } else {
-        echo "This email is not registered inside our database.";
+        setError("The provided email address is not registered our database.", '/login');
     }
 }
 

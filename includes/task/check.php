@@ -1,22 +1,14 @@
 <!-- connecting database -->
 <?php 
  
- $host = "localhost";
- $database_name = "my_todo_list_app";
- $database_user = "root";
- $database_password = "mysql";
-
- $database = new PDO (
-   "mysql:host=$host;dbname=$database_name",
-   $database_user, //username
-   $database_password //password
- );
+// connect to the database
+$database = connectToDB();   
 
  $id = $_POST['id'];
  $completed = $_POST['completed'];
 
  if ((empty($id) && empty($completed))) {
-    echo "error bro";
+    setError("Error, either ID or field was not clicked on.", '/');
  } else if ($completed == "1"){
     $sql = "UPDATE todos SET completed = '0' WHERE id = :id";
 
@@ -38,7 +30,7 @@
     'id' => $id
   ]);
 
-  header("Location: index.php");
+  header("Location: /");
     exit;
  }
 

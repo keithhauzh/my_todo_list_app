@@ -1,136 +1,59 @@
-<!-- connecting database -->
- <?php 
-  //session start
+<?php
+  // start session
   session_start();
 
-  $host = "localhost";
-  $database_name = "my_todo_list_app";
-  $database_user = "root";
-  $database_password = "mysql";
+  // import all the required files
+  require "includes/functions.php";
 
-  $database = new PDO (
-    "mysql:host=$host;dbname=$database_name",
-    $database_user, //username
-    $database_password //password
-  );
+  /*
+    simple routing system -> decide what page to load depending the url the user visit
 
-  $sql = "SELECT * FROM todos";
-  $query = $database->prepare($sql);
-  $query->execute();
-  $todos = $query->fetchAll();
-;
- ?>
+    Pages:
+    localhost:9000/ -> home.php
+    localhost:9000/login -> login.php
+    localhost:9000/signup -> signup.php
+    localhost:9000/logout -> logout.php
 
+    Actions:
+    localhost:9000/auth/login -> perform login
+    localhost:9000/auth/signup -> perform sign up
+    localhost:9000/task/add -> add task
+    localhost:9000/task/update -> update task
+    localhost:9000/task/delete -> delete task
+  */
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>TODO App</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
-    />
-    <style type="text/css">
-      body {
-        background: #f1f1f1;
-      }
-    </style>
-  </head>
-  <body>
-    <div
-      class="card rounded shadow-sm"
-      style="max-width: 500px; margin: 60px auto;"
-    >
-      <div class="card-body">
-        <h3 class="card-title mb-3">My Todo List</h3>
+  // figure out the url the user is visiting
+  $path = $_SERVER["REQUEST_URI"];
 
-        <!-- make it if logged in, show log out button and hide login and signup button, as well as making content hide when logged out -->
-        <?php if (isset ($_SESSION['loggeduser'])) :?>
-          <h4>Welcome back, <?= $_SESSION['loggeduser']['name']; ?></h4>
-          <div class="pb-2">
-            <a href="logout.php">Logout</a>
-          </div>
-        <?php else :?>
-          <div class="pb-2">
-            <a href="login.php">Login</a>
-            <a href="signup.php">Signup</a>
-          </div>
-        <?php endif ;?>
-
-        <!-- If user is loggged in, show add task section. Otherwise, hide -->
-        <?php if (isset ($_SESSION['loggeduser'])) : ?>
-          <ul class="list-group">
-            <?php foreach ($todos as $index => $task) : ?>
-              <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-              >
-                <div class="d-flex align-items-center">
-                  <!-- Check -->
-                  <form action="/check.php" method="POST">
-                    <input type="hidden" name="id" value="<?= $task['id']; ?>">
-                    <input type="hidden" name="completed" value="<?= $task['completed'];?>">
-
-                    <?php if ($task['completed'] == 1) :?>
-                      <button class="btn btn-sm btn-success">
-                        <i class="bi bi-check-square"></i>
-                      </button>
-                    <?php else :?>
-                      <button class="btn btn-sm">
-                        <i class="bi bi-square"></i>
-                      </button>
-                    <?php endif ;?>
-
-                    
-                  </form>
-
-                  <?php if ($task['completed'] == 1) :?>
-                    <span class="ms-2">
-                      <del><?= $task["label"]; ?></del>
-                    </span>
-                  <?php else :?>
-                    <span class="ms-2">
-                      <?= $task["label"]; ?>
-                    </span>
-                  <?php endif ;?>
-
-                </div>
-
-                <!-- Delete Button -->
-                <form action="/delete.php" method="POST" style="margin: 0;">
-                      <!-- value="= $task"['id']; "> is to dynamically set the value of the input field which is inside the form field to be the $task['id'], which is the id of the selected task that is to be deleted -->
-                      <input type="hidden" name="id" value="<?= $task['id']; ?>">
-                      <button class="btn btn-sm btn-danger" type="submit">
-                          <i class="bi bi-trash"></i>
-                      </button>
-                </form>
-              </li>
-            <?php endforeach; ?>
-            
-          </ul>
-          
-          
-          <div class="mt-4">
-            <form class="d-flex justify-content-between align-items-center" method = "POST" action="/add_task.php">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Add new task..."
-                name = "label_name"
-              />
-              <button class="btn btn-primary btn-sm rounded ms-2">Add</button>
-            </form>
-          </div>
-        <?php endif ; ?>
-
-      </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+  // once you figure out the path the user is visiting, load relevant content
+  switch( $path ) {
+    // actions
+    case '/auth/login':
+      require 'includes/authentication/login.php';
+      break;
+    case '/auth/signup':
+      require 'includes/authentication/signup.php';
+      break;
+    case '/task/add':
+      require 'includes/task/add.php';
+      break;
+    case '/task/update':
+      require 'includes/task/check.php';
+      break;
+    case '/task/delete':
+      require 'includes/task/delete.php';
+      break;
+    // pages
+    case '/login':
+      require 'pages/login.php';
+      break;
+    case '/signup':
+      require 'pages/signup.php';
+      break;
+    case '/logout':
+      require 'pages/logout.php';
+      break;
+    default:
+      require 'pages/home.php';
+      break;
+  }
