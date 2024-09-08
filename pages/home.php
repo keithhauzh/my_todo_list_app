@@ -46,7 +46,7 @@ require 'parts/header.php';
         <?php require 'parts/error_box.php'; ?>
 
         <!-- If user is loggged in, show add task section. Otherwise, hide -->
-        <?php if (isset ($_SESSION['loggeduser'])) : ?>
+        <?php if (isset ($_SESSION['loggeduser'])) : ?> 
           <ul class="list-group">
             <?php foreach ($todos as $index => $task) : ?>
               <li

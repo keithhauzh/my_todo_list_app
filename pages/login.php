@@ -6,7 +6,7 @@
           Login To Your Account
         </h5>
         
-        <?php require 'parts/error_box.php'?>
+        <?php require 'parts/error_box.php';?>
 
         <!-- login form-->
         <form action="/auth/login" method="POST">

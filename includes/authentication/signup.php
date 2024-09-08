@@ -17,7 +17,7 @@ if ( empty($name) || empty($email) || empty($password) || empty($confirm_passwor
     setError("Please make sure all passwords entered are the same", '/signup');
 } else if (strlen ($password) < 8) {
     setError("Please make sure your password is at least 8 characters long", '/signup');
-} else {
+} else {    
     //check if the email is already in use or not
     //sql command
     $sql = "SELECT * FROM users WHERE email = :email";
@@ -35,7 +35,7 @@ if ( empty($name) || empty($email) || empty($password) || empty($confirm_passwor
 
     if( $user ) {
         setError("The email provided is already registered in our database", '/signup');
-    } else {
+    } else {    
          //create a user account 
         $sql = "INSERT INTO users (`name` , `email` , `password`) VALUES (:name, :email, :password)";
 
